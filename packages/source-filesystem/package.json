@@ -3,13 +3,27 @@
   "version": "0.0.1",
   "type": "module",
   "description": "CL3 filesystem source adapter",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "vitest run"
   },
+  "dependencies": {
+    "@cl3/core": "workspace:*",
+    "gray-matter": "^4.0.3",
+    "fast-glob": "^3.3.2",
+    "js-yaml": "^4.1.0"
+  },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20",
     "typescript": "^5.3.0",
     "vitest": "^1.0.0"
   }
