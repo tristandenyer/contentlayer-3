@@ -42,6 +42,11 @@ export async function getCollection<TSchema extends z.ZodObject<z.ZodRawShape>>(
   }
 
   globalCache.set(cacheKey, results)
+
+  if (collection.config?.onIndexReady) {
+    await collection.config.onIndexReady(results)
+  }
+
   return results
 }
 

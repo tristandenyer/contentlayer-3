@@ -9,12 +9,14 @@ export interface CollectionConfig<TSchema extends z.ZodType> {
   name: string
   source: CollectionSource<unknown>
   schema: TSchema
+  onIndexReady?: (items: z.infer<TSchema>[]) => Promise<void> | void
 }
 
 export interface Collection<TSchema extends z.ZodType> {
   name: string
   source: CollectionSource<unknown>
   schema: TSchema
+  config: CollectionConfig<TSchema>
 }
 
 export interface CL3Cache {

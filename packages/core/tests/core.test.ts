@@ -143,3 +143,42 @@ describe('getCollectionItem', () => {
     expect(item).toBeUndefined()
   })
 })
+
+describe('onIndexReady hook', () => {
+  it('onIndexReady is called when collection is loaded cold', async () => {
+    const called: unknown[] = []
+    const col = defineCollection({
+      name: 'hooktest',
+      source: { load: async () => [{ title: 'A' }] },
+      schema: z.object({ title: z.string() }),
+      onIndexReady: async (items) => { called.push(...items) },
+    })
+    await getCollection(col)
+    expect(called.length).toBe(1)
+  })
+
+  it('onIndexReady is NOT called on cache hit', async () => {
+    let callCount = 0
+    const col = defineCollection({
+      name: 'hookcache',
+      source: { load: async () => [{ title: 'B' }] },
+      schema: z.object({ title: z.string() }),
+      onIndexReady: async () => { callCount++ },
+    })
+    await getCollection(col)   // cold load
+    await getCollection(col)   // cache hit
+    expect(callCount).toBe(1)
+  })
+
+  it('onIndexReady receives the full validated array', async () => {
+    let received: unknown[] = []
+    const col = defineCollection({
+      name: 'hookreceive',
+      source: { load: async () => [{ title: 'X' }, { title: 'Y' }] },
+      schema: z.object({ title: z.string() }),
+      onIndexReady: async (items) => { received = items },
+    })
+    await getCollection(col)
+    expect(received).toEqual([{ title: 'X' }, { title: 'Y' }])
+  })
+})

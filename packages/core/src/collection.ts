@@ -8,5 +8,6 @@ export function defineCollection<TSchema extends z.ZodObject<z.ZodRawShape>>(
     name: config.name,
     source: config.source,
     schema: config.schema,
+    config,
   }
 }

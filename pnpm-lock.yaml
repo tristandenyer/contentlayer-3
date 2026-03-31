@@ -11,6 +11,9 @@ importers:
       '@mdx-js/mdx':
         specifier: ^3.0.0
         version: 3.1.1
+      '@orama/orama':
+        specifier: ^3.0.0
+        version: 3.1.18
       '@types/mdast':
         specifier: ^4.0.0
         version: 4.0.4
@@ -185,7 +188,14 @@ importers:
         version: 1.6.1(@types/node@20.19.37)
 
   packages/search-orama:
+    dependencies:
+      '@orama/orama':
+        specifier: ^3.0.0
+        version: 3.1.18
     devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.37
       typescript:
         specifier: ^5.3.0
         version: 5.9.3
@@ -195,6 +205,9 @@ importers:
 
   packages/search-pagefind:
     devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.37
       typescript:
         specifier: ^5.3.0
         version: 5.9.3
@@ -746,6 +759,10 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
+
+  '@orama/orama@3.1.18':
+    resolution: {integrity: sha512-a61ljmRVVyG5MC/698C8/FfFDw5a8LOIvyOLW5fztgUXqUpc1jOfQzOitSCbge657OgXXThmY3Tk8fpiDb4UcA==}
+    engines: {node: '>= 20.0.0'}
 
   '@rollup/rollup-android-arm-eabi@4.60.1':
     resolution: {integrity: sha512-d6FinEBLdIiK+1uACUttJKfgZREXrF0Qc2SmLII7W2AD8FfiZ9Wjd+rD/iRuf5s5dWrr1GgwXCvPqOuDquOowA==}
@@ -2515,6 +2532,8 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
+
+  '@orama/orama@3.1.18': {}
 
   '@rollup/rollup-android-arm-eabi@4.60.1':
     optional: true
