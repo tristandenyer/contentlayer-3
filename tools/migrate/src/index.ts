@@ -1,1 +1,5 @@
-export {}
+export { transformConfig } from './transforms/config.js'
+export { transformNextConfig } from './transforms/next-config.js'
+export { transformImports } from './transforms/imports.js'
+export { generateReport } from './report.js'
+export type { TransformResult, Warning, MigrationSummary } from './types.js'

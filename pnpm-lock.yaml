@@ -26,12 +26,18 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^7.0.0
         version: 7.18.0(eslint@9.39.4)(typescript@5.9.3)
+      commander:
+        specifier: ^12.0.0
+        version: 12.1.0
       eslint:
         specifier: ^9.0.0
         version: 9.39.4
       next:
         specifier: ^15
         version: 15.5.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      picocolors:
+        specifier: ^1.0.0
+        version: 1.1.1
       typescript:
         specifier: ^5.3.0
         version: 5.9.3
@@ -234,7 +240,17 @@ importers:
         version: 1.6.1(@types/node@20.19.37)
 
   tools/migrate:
+    dependencies:
+      commander:
+        specifier: ^12.0.0
+        version: 12.1.0
+      picocolors:
+        specifier: ^1.0.0
+        version: 1.1.1
     devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.37
       typescript:
         specifier: ^5.3.0
         version: 5.9.3
@@ -1106,6 +1122,10 @@ packages:
 
   comma-separated-tokens@2.0.3:
     resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
+
+  commander@12.1.0:
+    resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
+    engines: {node: '>=18'}
 
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
@@ -2827,6 +2847,8 @@ snapshots:
   color-name@1.1.4: {}
 
   comma-separated-tokens@2.0.3: {}
+
+  commander@12.1.0: {}
 
   concat-map@0.0.1: {}
 
