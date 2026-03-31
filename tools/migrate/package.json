@@ -1,0 +1,18 @@
+{
+  "name": "@cl3/migrate",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "CL3 migration tool",
+  "main": "./dist/index.js",
+  "bin": {
+    "cl3-migrate": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  }
+}

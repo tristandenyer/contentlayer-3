@@ -1,0 +1,20 @@
+{
+  "name": "@cl3/next",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "CL3 Next.js integration",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "next": ">=14"
+  },
+  "devDependencies": {
+    "next": "latest",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  }
+}

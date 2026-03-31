@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true
+  },
+  "include": ["vitest.config.ts", "eslint.config.js", "packages/*/src", "packages/*/tests", "tools/*/src"],
+  "exclude": ["node_modules", "dist", "apps"]
+}

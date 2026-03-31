@@ -1,0 +1,16 @@
+{
+  "name": "@cl3/search-orama",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "CL3 Orama search adapter",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  }
+}
