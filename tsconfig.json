@@ -2,8 +2,28 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "rootDir": ".",
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@cl3/core": ["./packages/core/src/index.ts"],
+      "@cl3/core/*": ["./packages/core/src/*.ts"],
+      "@cl3/next": ["./packages/next/src/index.ts"],
+      "@cl3/next/*": ["./packages/next/src/*.ts"],
+      "@cl3/mdx": ["./packages/mdx/src/index.ts"],
+      "@cl3/source-filesystem": ["./packages/source-filesystem/src/index.ts"],
+      "@cl3/source-remote": ["./packages/source-remote/src/index.ts"],
+      "@cl3/search-orama": ["./packages/search-orama/src/index.ts"],
+      "@cl3/search-pagefind": ["./packages/search-pagefind/src/index.ts"],
+      "@cl3/devtools": ["./packages/devtools/src/index.ts"],
+      "@cl3/migrate": ["./tools/migrate/src/index.ts"]
+    }
   },
-  "include": ["vitest.config.ts", "eslint.config.js", "packages/*/src", "packages/*/tests", "tools/*/src"],
+  "include": [
+    "vitest.config.ts",
+    "eslint.config.js",
+    "packages/*/src",
+    "packages/*/tests",
+    "tools/*/src",
+    "tools/*/tests"
+  ],
   "exclude": ["node_modules", "dist", "apps"]
 }

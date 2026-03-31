@@ -3,7 +3,8 @@
   "compilerOptions": {
     "jsx": "preserve",
     "incremental": true,
-    "lib": ["ES2022", "dom", "dom.iterable"]
+    "lib": ["ES2022", "dom", "dom.iterable"],
+    "rootDir": "./"
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
