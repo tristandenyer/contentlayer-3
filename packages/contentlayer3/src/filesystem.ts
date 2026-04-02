@@ -57,11 +57,24 @@ export function filesystem(options: FilesystemSourceOptions): CollectionSource<u
 
         if (ext === 'md' || ext === 'mdx') {
           const { data, content } = matter(raw)
-          results.push({ ...data, _content: content, _filePath: relPath })
+          const sourceFileName = relPath.split('/').pop() ?? relPath
+          const sourceFileDir = relPath.includes('/') ? relPath.slice(0, relPath.lastIndexOf('/')) : '.'
+          const flattenedPath = relPath.replace(/\.(md|mdx)$/, '')
+          const _raw = {
+            sourceFilePath: relPath,
+            sourceFileName,
+            sourceFileDir,
+            flattenedPath,
+            contentType: ext as 'md' | 'mdx',
+          }
+          results.push({ ...data, _content: content, body: { raw: content }, _filePath: relPath, _raw })
         } else if (ext === 'json') {
           try {
             const parsed = JSON.parse(raw) as Record<string, unknown>
-            results.push({ ...parsed, _filePath: relPath })
+            const sourceFileName = relPath.split('/').pop() ?? relPath
+            const sourceFileDir = relPath.includes('/') ? relPath.slice(0, relPath.lastIndexOf('/')) : '.'
+            const _raw = { sourceFilePath: relPath, sourceFileName, sourceFileDir, flattenedPath: relPath.replace(/\.json$/, ''), contentType: 'data' as const }
+            results.push({ ...parsed, _filePath: relPath, _raw })
           } catch (err) {
             throw new CL3SourceError(
               filePath,
@@ -70,7 +83,10 @@ export function filesystem(options: FilesystemSourceOptions): CollectionSource<u
           }
         } else if (ext === 'yaml' || ext === 'yml') {
           const parsed = yamlLoad(raw) as Record<string, unknown>
-          results.push({ ...parsed, _filePath: relPath })
+          const sourceFileName = relPath.split('/').pop() ?? relPath
+          const sourceFileDir = relPath.includes('/') ? relPath.slice(0, relPath.lastIndexOf('/')) : '.'
+          const _raw = { sourceFilePath: relPath, sourceFileName, sourceFileDir, flattenedPath: relPath.replace(/\.ya?ml$/, ''), contentType: 'data' as const }
+          results.push({ ...parsed, _filePath: relPath, _raw })
         }
       }
 

@@ -28,6 +28,16 @@ const FIXTURE = join(import.meta.dirname, 'fixtures/legacy-blog')
 
 // ─── Schema definitions (mirrors a real contentlayer.config.ts) ──────────────
 
+const rawDataSchema = z.object({
+  sourceFilePath: z.string(),
+  sourceFileName: z.string(),
+  sourceFileDir: z.string(),
+  flattenedPath: z.string(),
+  contentType: z.string(),
+})
+
+const bodySchema = z.object({ raw: z.string() })
+
 const authorSchema = z.object({
   name: z.string(),
   slug: z.string(),
@@ -36,6 +46,8 @@ const authorSchema = z.object({
   avatar: z.string().optional(),
   _filePath: z.string(),
   _content: z.string(),
+  body: bodySchema,
+  _raw: rawDataSchema,
 })
 
 const postSchema = z.object({
@@ -47,6 +59,8 @@ const postSchema = z.object({
   author: z.string().optional(),   // reference stored as slug string
   _filePath: z.string(),
   _content: z.string(),
+  body: bodySchema,
+  _raw: rawDataSchema,
 })
 
 const pageSchema = z.object({
@@ -54,6 +68,8 @@ const pageSchema = z.object({
   description: z.string().optional(),
   _filePath: z.string(),
   _content: z.string(),
+  body: bodySchema,
+  _raw: rawDataSchema,
 })
 
 function makeAuthors() {
@@ -369,6 +385,134 @@ describe('getCollectionItemBase', () => {
       return slug === 'does-not-exist'
     })
     expect(item).toBeUndefined()
+  })
+})
+
+// ─── _raw data contract (v1/v2 compatibility) ─────────────────────────────────
+//
+// Original Contentlayer injected a `_raw` object on every document with:
+//   _raw.sourceFilePath  — relative path from contentDirPath (same as _filePath)
+//   _raw.sourceFileName  — basename of the file  e.g. "hello-world.mdx"
+//   _raw.sourceFileDir   — directory portion      e.g. "posts"
+//   _raw.flattenedPath   — path without extension e.g. "posts/hello-world"
+//   _raw.contentType     — "mdx" | "md" | "data"
+//
+// Many real configs use `doc._raw.flattenedPath` for URL generation.
+// CL3 replicates this shape so existing code continues to work without changes.
+
+describe('_raw data contract (v1/v2 compat)', () => {
+  it('every post has a _raw object', async () => {
+    const posts = makePosts()
+    const items = await getCollectionBase(posts)
+    for (const item of items) {
+      expect((item as any)._raw).toBeDefined()
+      expect(typeof (item as any)._raw).toBe('object')
+    }
+  })
+
+  it('_raw.sourceFilePath matches _filePath', async () => {
+    const posts = makePosts()
+    const items = await getCollectionBase(posts)
+    for (const item of items) {
+      const p = item as any
+      expect(p._raw.sourceFilePath).toBe(p._filePath)
+    }
+  })
+
+  it('_raw.sourceFileName is the basename of the file', async () => {
+    const posts = makePosts()
+    const items = await getCollectionBase(posts)
+    const post = items.find((p) => (p as any)._raw.flattenedPath?.endsWith('hello-world')) as any
+    expect(post._raw.sourceFileName).toBe('hello-world.mdx')
+  })
+
+  it('_raw.sourceFileDir is the directory portion', async () => {
+    const posts = makePosts()
+    const items = await getCollectionBase(posts)
+    for (const item of items) {
+      // files live in content/posts/ — _raw.sourceFileDir should contain that segment
+      expect((item as any)._raw.sourceFileDir).toBeTypeOf('string')
+      expect((item as any)._raw.sourceFileDir.length).toBeGreaterThan(0)
+    }
+  })
+
+  it('_raw.flattenedPath is the path without extension', async () => {
+    const posts = makePosts()
+    const items = await getCollectionBase(posts)
+    const post = items.find((p) => (p as any)._raw?.flattenedPath?.endsWith('hello-world')) as any
+    expect(post).toBeDefined()
+    expect(post._raw.flattenedPath).not.toMatch(/\.mdx?$/)
+  })
+
+  it('_raw.flattenedPath can be used for URL generation (v1 pattern)', async () => {
+    // Mirrors: computedFields: { url: { resolve: (doc) => `/${doc._raw.flattenedPath}` } }
+    const posts = makePosts()
+    const items = await getCollectionBase(posts)
+    for (const item of items) {
+      const p = item as any
+      const url = `/${p._raw.flattenedPath}`
+      expect(url).toMatch(/^\//)
+      expect(url).not.toMatch(/\.mdx?$/)
+    }
+  })
+
+  it('_raw.contentType is "mdx" for .mdx files', async () => {
+    const posts = makePosts()
+    const items = await getCollectionBase(posts)
+    for (const item of items) {
+      expect((item as any)._raw.contentType).toBe('mdx')
+    }
+  })
+
+  it('_raw.contentType is "md" for .md files', async () => {
+    const authors = makeAuthors()
+    const items = await getCollectionBase(authors)
+    for (const item of items) {
+      expect((item as any)._raw.contentType).toBe('md')
+    }
+  })
+})
+
+// ─── body shim (v1/v2 body.raw compatibility) ────────────────────────────────
+//
+// v1/v2 exposed content as `body.raw` (and `body.code` for MDX).
+// CL3's canonical field is `_content`, but `body.raw` is injected automatically
+// so existing renderers and search hooks continue to work without changes.
+
+describe('body shim (v1/v2 body.raw compat)', () => {
+  it('every document has a body object', async () => {
+    const posts = makePosts()
+    const items = await getCollectionBase(posts)
+    for (const item of items) {
+      expect((item as any).body).toBeDefined()
+      expect(typeof (item as any).body).toBe('object')
+    }
+  })
+
+  it('body.raw equals _content', async () => {
+    const posts = makePosts()
+    const items = await getCollectionBase(posts)
+    for (const item of items) {
+      const p = item as any
+      expect(p.body.raw).toBe(p._content)
+    }
+  })
+
+  it('body.raw contains the markdown body without frontmatter', async () => {
+    const posts = makePosts()
+    const items = await getCollectionBase(posts)
+    const post = items.find((p) => (p as any).slug === 'hello-world') as any
+    expect(post.body.raw).toContain('Welcome to my blog')
+    expect(post.body.raw).not.toContain('title:')
+  })
+
+  it('body.raw works on .md files too (authors)', async () => {
+    const authors = makeAuthors()
+    const items = await getCollectionBase(authors)
+    for (const item of items) {
+      expect((item as any).body).toBeDefined()
+      expect(typeof (item as any).body.raw).toBe('string')
+    }
   })
 })
 

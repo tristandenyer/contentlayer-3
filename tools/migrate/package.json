@@ -1,10 +1,10 @@
 {
-  "name": "@cl3/migrate",
+  "name": "@contentlayer3/migrate",
   "version": "0.1.0",
   "type": "module",
-  "description": "CL3 migration toolkit — codemod from contentlayer to CL3",
+  "description": "Contentlayer3 migration codemod: migrate from contentlayer v1/v2 to Contentlayer3",
   "bin": {
-    "cl3-migrate": "./dist/cli.js"
+    "contentlayer3-migrate": "./dist/cli.js"
   },
   "scripts": {
     "build": "tsc",

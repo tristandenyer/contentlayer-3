@@ -11,8 +11,8 @@ import type { MigrationSummary } from './types.js'
 const program = new Command()
 
 program
-  .name('cl3-migrate')
-  .description('Migrate from contentlayer to CL3')
+  .name('contentlayer3-migrate')
+  .description('Migrate from contentlayer v1/v2 to Contentlayer3')
   .version('0.1.0')
 
 program
@@ -63,7 +63,7 @@ function runMigration({ dryRun }: { dryRun: boolean }) {
     warnings: [],
   }
 
-  console.log(pc.bold('\n🚀 CL3 Migration' + (dryRun ? ' (dry run)' : '')))
+  console.log(pc.bold('\nContentlayer3 Migration' + (dryRun ? ' (dry run)' : '')))
   console.log(pc.dim('─'.repeat(50)))
 
   const configPath = join(cwd, 'contentlayer.config.ts')

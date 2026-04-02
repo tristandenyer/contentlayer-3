@@ -49,8 +49,16 @@ export const posts = defineCollection({
     _filePath: z.string().optional(),
   }),
   computedFields: {
-    slug: (post) => post._filePath?.replace(/\.mdx?$/, "").split("/").pop() ?? "",
-    url:  (post) => `/posts/${post._filePath?.replace(/\.mdx?$/, "").split("/").pop()}`,
+    slug: (post) =>
+      post._filePath
+        ?.replace(/\.mdx?$/, "")
+        .split("/")
+        .pop() ?? "",
+    url: (post) =>
+      `/posts/${post._filePath
+        ?.replace(/\.mdx?$/, "")
+        .split("/")
+        .pop()}`,
   },
 });
 ```
@@ -110,16 +118,18 @@ export async function POST(request: Request) {
 
 ## Package Map
 
-| Package                          | Purpose                                                                                             | Edge-Safe         |
-| -------------------------------- | --------------------------------------------------------------------------------------------------- | ----------------- |
-| `contentlayer3`                  | Collection definition, validation, in-memory cache, Next.js integration, MDX, and filesystem source | ✓ (core + remote) |
-| `@contentlayer3/source-remote`   | HTTP remote content source with offset/cursor pagination                                            | ✓                 |
-| `@contentlayer3/search-orama`    | Full-text search with Orama v3                                                                      | ✓                 |
-| `@contentlayer3/search-pagefind` | Pagefind manifest generation for static search                                                      | ✗                 |
-| `@contentlayer3/devtools`        | CLI tools: `validate`, `inspect`, `watch`                                                           | ✗                 |
-| `@contentlayer3/postman`         | Postman governance CLI: sync remote source schemas with Postman collections                         | ✗                 |
-| `@contentlayer3/graphql`         | GraphQL API plugin: expose collections via a type-safe GraphQL endpoint                             | ✓                 |
-| `@contentlayer3/mcp`             | MCP server for AI-assisted governance: query collections, diff Postman specs, validate schemas      | ✗                 |
+| Package                          | Purpose                                                                                             | Edge-Safe<sup>†</sup> |
+| -------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------- |
+| `contentlayer3`                  | Collection definition, validation, in-memory cache, Next.js integration, MDX, and filesystem source | 🟢 (core + remote)    |
+| `@contentlayer3/source-remote`   | HTTP remote content source with offset/cursor pagination                                            | 🟢                    |
+| `@contentlayer3/search-orama`    | Full-text search with Orama v3                                                                      | 🟢                    |
+| `@contentlayer3/search-pagefind` | Pagefind manifest generation for static search                                                      | 🔴                    |
+| `@contentlayer3/devtools`        | CLI tools: `validate`, `inspect`, `watch`                                                           | —                     |
+| `@contentlayer3/postman`         | Postman governance CLI: sync remote source schemas with Postman collections                         | —                     |
+| `@contentlayer3/graphql`         | GraphQL API plugin: expose collections via a type-safe GraphQL endpoint                             | 🟢                    |
+| `@contentlayer3/mcp`             | MCP server for AI-assisted governance: query collections, diff Postman specs, validate schemas      | —                     |
+
+<sup>†</sup> Contentlayer3 can run in edge runtimes such as Cloudflare Workers, Vercel Edge Functions, and similar environments that are not full Node.js.
 
 ### Subpath exports
 
@@ -131,23 +141,25 @@ export async function POST(request: Request) {
 
 ## Feature Comparison
 
-| Feature                   | CL3 | Velite         | content-collections | contentlayer2  |
-| ------------------------- | --- | -------------- | ------------------- | -------------- |
-| Runtime-first             | 🟢  | 🔴             | 🔴                  | 🔴             |
-| Zod schemas               | 🟢  | 🟢             | 🟢                  | 🔴             |
-| revalidateTag integration | 🟢  | 🔴             | 🔴                  | 🔴             |
-| Turbopack compatible      | 🟢  | 🟡<sup>1</sup> | 🟢                  | 🟡<sup>1</sup> |
-| Computed fields           | 🟢  | 🟢             | 🟢                  | 🟢             |
-| Collection references     | 🟢  | 🔴             | 🔴                  | 🟢             |
-| Remote sources            | 🟢  | 🔴             | 🔴                  | 🔴             |
-| Edge-safe core            | 🟢  | 🔴             | 🔴                  | 🔴             |
-| Search hooks              | 🟢  | 🔴             | 🔴                  | 🔴             |
-| Postman governance        | 🟢  | 🔴             | 🔴                  | 🔴             |
-| GraphQL API               | 🟢  | 🔴             | 🔴                  | 🟢             |
-| Build-time/static output  | 🔴  | 🟢             | 🟢                  | 🟢             |
-| Actively maintained       | 🟢  | 🟢             | 🟢                  | 🟢             |
+| Feature                   | contentlayer3  | Velite         | content-collections | contentlayer2  |
+| ------------------------- | -------------- | -------------- | ------------------- | -------------- |
+| Runtime-first             | 🟢             | 🔴             | 🔴                  | 🔴             |
+| Zod schemas               | 🟢             | 🟢             | 🟢                  | 🔴             |
+| revalidateTag integration | 🟢             | 🔴             | 🔴                  | 🔴             |
+| Turbopack compatible      | 🟢             | 🟡<sup>1</sup> | 🟢                  | 🟡<sup>1</sup> |
+| Computed fields           | 🟢             | 🟢             | 🟢                  | 🟢             |
+| Collection references     | 🟢             | 🔴             | 🔴                  | 🟢             |
+| Remote sources            | 🟢             | 🔴             | 🔴                  | 🔴             |
+| Edge-safe core            | 🟢             | 🔴             | 🔴                  | 🔴             |
+| Search hooks              | 🟢             | 🔴             | 🔴                  | 🔴             |
+| Postman governance        | 🟢             | 🔴             | 🔴                  | 🔴             |
+| GraphQL API               | 🟢             | 🔴             | 🔴                  | 🟢             |
+| Build-time/static output  | 🔴<sup>2</sup> | 🟢             | 🟢                  | 🟢             |
+| Actively maintained       | 🟢             | 🟢             | 🟢                  | 🟢             |
 
 <sup>1</sup> Partial support. Build-step and webpack plugin dependencies cause known issues with Turbopack. Contentlayer3 has no build-time dependency, making Turbopack compatibility a non-issue.
+
+<sup>2</sup> By design. Contentlayer3 fetches content at request time, sidestepping bundler dependency.
 
 ## Computed Fields
 
@@ -167,8 +179,16 @@ export const posts = defineCollection({
     _filePath: z.string(),
   }),
   computedFields: {
-    slug: (post) => post._filePath.replace(/\.mdx?$/, "").split("/").pop(),
-    url:  (post) => `/posts/${post._filePath.replace(/\.mdx?$/, "").split("/").pop()}`,
+    slug: (post) =>
+      post._filePath
+        .replace(/\.mdx?$/, "")
+        .split("/")
+        .pop(),
+    url: (post) =>
+      `/posts/${post._filePath
+        .replace(/\.mdx?$/, "")
+        .split("/")
+        .pop()}`,
     // async fields are awaited automatically
     readingTime: async (post) => estimateReadingTime(post._filePath),
   },
@@ -194,7 +214,7 @@ export const posts = defineCollection({
   source: filesystem({ contentDir: "content/posts", pattern: "**/*.mdx" }),
   schema: z.object({
     title: z.string(),
-    author: reference(authors),  // stored as slug string
+    author: reference(authors), // stored as slug string
   }),
 });
 
@@ -285,14 +305,14 @@ Configure in your MCP client (e.g. `claude_desktop_config.json`):
 
 ### Available tools
 
-| Tool | What it does |
-| --- | --- |
-| `get-collection` | Load a collection by name from `contentlayer3.mcp.json` |
-| `validate-collection` | Validate all items against the collection schema |
-| `get-schema` | Return field names and types for a collection |
-| `postman-status` | Read sync state from `contentlayer3.lock` |
-| `postman-diff` | Fetch the latest diff for a governed collection |
-| `graphql-validate` | Validate the GraphQL schema from `contentlayer3.graphql.json` |
+| Tool                  | What it does                                                  |
+| --------------------- | ------------------------------------------------------------- |
+| `get-collection`      | Load a collection by name from `contentlayer3.mcp.json`       |
+| `validate-collection` | Validate all items against the collection schema              |
+| `get-schema`          | Return field names and types for a collection                 |
+| `postman-status`      | Read sync state from `contentlayer3.lock`                     |
+| `postman-diff`        | Fetch the latest diff for a governed collection               |
+| `graphql-validate`    | Validate the GraphQL schema from `contentlayer3.graphql.json` |
 
 Create a `contentlayer3.mcp.json` sidecar in your project root to configure collections:
 
@@ -311,20 +331,60 @@ Create a `contentlayer3.mcp.json` sidecar in your project root to configure coll
 }
 ```
 
-## Documentation
+## Contentlayer3 Package Docs
 
-- [Core / Next.js](./packages/contentlayer3/README.md)
-- [Remote Source](./packages/source-remote/README.md)
-- [Orama Search](./packages/search-orama/README.md)
-- [Pagefind Search](./packages/search-pagefind/README.md)
-- [Developer Tools](./packages/devtools/README.md)
-- [Postman Governance](./packages/postman/README.md)
-- [GraphQL Plugin](./packages/graphql/README.md)
-- [MCP Server](./packages/mcp/README.md)
+- [Core / Next.js](./packages/contentlayer3/README.md): collection definition, validation, in-memory cache, Next.js integration, MDX, and filesystem source
+
+**Docs for optional add-ons:**
+
+- [Remote Source](./packages/source-remote/README.md): HTTP remote content source with offset/cursor pagination
+- [Orama Search](./packages/search-orama/README.md): full-text search with Orama v3
+- [Pagefind Search](./packages/search-pagefind/README.md): Pagefind manifest generation for static search
+- [Developer Tools](./packages/devtools/README.md): CLI tools for `validate`, `inspect`, and `watch`
+- [Postman Governance](./packages/postman/README.md): sync remote source schemas with Postman collections
+- [GraphQL Plugin](./packages/graphql/README.md): expose collections via a type-safe GraphQL endpoint
+- [MCP Server](./packages/mcp/README.md): AI-assisted governance, query collections, diff Postman specs, validate schemas
+- [Migration Codemod](./tools/migrate/README.md): CLI to migrate existing Contentlayer v1/v2 projects to Contentlayer3
+
+## Automatic Fields
+
+Every document loaded from the filesystem source receives these fields automatically, no schema declaration needed:
+
+| Field                 | Type     | Description                                                    |
+| --------------------- | -------- | -------------------------------------------------------------- |
+| `_filePath`           | `string` | Relative path from project root e.g. `content/posts/hello.mdx` |
+| `_content`            | `string` | Raw body text with frontmatter stripped                        |
+| `body.raw`            | `string` | Same as `_content`, provided for v1/v2 compatibility           |
+| `_raw.sourceFilePath` | `string` | Same as `_filePath`                                            |
+| `_raw.sourceFileName` | `string` | Basename e.g. `hello.mdx`                                      |
+| `_raw.sourceFileDir`  | `string` | Directory portion e.g. `content/posts`                         |
+| `_raw.flattenedPath`  | `string` | Path without extension e.g. `content/posts/hello`              |
+| `_raw.contentType`    | `string` | `"md"`, `"mdx"`, or `"data"`                                   |
+
+The `_raw` and `body.raw` shapes are intentionally compatible with Contentlayer v1/v2 so existing code continues to work without changes.
+
+### Migrating from Contentlayer v1/v2
+
+| v1/v2                                                                 | Contentlayer3                              |
+| --------------------------------------------------------------------- | ------------------------------------------ |
+| `doc._id`                                                             | `doc._filePath`                            |
+| `doc._raw.flattenedPath`                                              | `doc._raw.flattenedPath` (same)            |
+| `doc._raw.sourceFilePath`                                             | `doc._raw.sourceFilePath` (same)           |
+| `doc.body.raw`                                                        | `doc.body.raw` (same), also `doc._content` |
+| `doc.body.code`                                                       | `(await compileMDX(doc._content)).code`    |
+| `defineDocumentType(() => ({ ... }))`                                 | `defineCollection({ ... })`                |
+| `computedFields: { slug: { type: 'string', resolve: (doc) => ... } }` | `computedFields: { slug: (doc) => ... }`   |
 
 ## Migration from Contentlayer
 
-The `migrate` codemod lives in `tools/migrate` and is under active development. It performs AST-level transforms on existing Contentlayer configs and imports.
+Use the `contentlayer3-migrate` codemod to automate the majority of the migration:
+
+```bash
+npx contentlayer3-migrate check   # preview changes
+npx contentlayer3-migrate run     # apply transforms and generate migration-report.md
+```
+
+See the [Migration Codemod docs](./tools/migrate/README.md) for the full list of transforms, field type mappings, and what requires manual review.
 
 ## Examples
 
