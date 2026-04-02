@@ -22,7 +22,6 @@ export function remote(options: RemoteSourceOptions): CollectionSource<unknown> 
         timeout = 10000,
       } = options
 
-      // No pagination or 'none' strategy
       if (!pagination || pagination.strategy === 'none') {
         const signal = AbortSignal.timeout(timeout)
         const response = await fetch(endpoint, {
@@ -42,27 +41,10 @@ export function remote(options: RemoteSourceOptions): CollectionSource<unknown> 
         return items
       }
 
-      // Offset pagination
       if (pagination.strategy === 'offset') {
         const pageSize = pagination.pageSize
         if (!pageSize) {
-          // Fall back to no-pagination behavior
-          const signal = AbortSignal.timeout(timeout)
-          const response = await fetch(endpoint, {
-            headers,
-            signal,
-          })
-
-          if (!response.ok) {
-            throw new CL3SourceError(
-              `Remote source fetch failed: HTTP ${response.status}`,
-              response.status
-            )
-          }
-
-          const raw = await response.json()
-          const items = transform ? transform(raw) : (Array.isArray(raw) ? raw : [])
-          return items
+          throw new CL3SourceError('Offset pagination requires pageSize')
         }
 
         const offsetParam = pagination.offsetParam ?? 'offset'
@@ -104,7 +86,6 @@ export function remote(options: RemoteSourceOptions): CollectionSource<unknown> 
         return allItems
       }
 
-      // Cursor pagination
       if (pagination.strategy === 'cursor') {
         const cursorParam = pagination.cursorParam ?? 'cursor'
         const cursorResponseKey = pagination.cursorResponseKey ?? 'nextCursor'
@@ -136,7 +117,6 @@ export function remote(options: RemoteSourceOptions): CollectionSource<unknown> 
 
           allItems.push(...pageItems)
 
-          // Extract next cursor from raw response
           const nextCursor = (raw as Record<string, unknown>)?.[cursorResponseKey] as string | undefined
 
           if (!nextCursor) {

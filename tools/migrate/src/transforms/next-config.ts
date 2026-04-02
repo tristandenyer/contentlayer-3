@@ -22,9 +22,9 @@ export function transformNextConfig(source: string): TransformResult {
     transformed = true
   }
 
-  // Add CL3 comment at top if we made changes
+  // Add note at top if we made changes
   if (transformed) {
-    output = `// CL3: No next.config changes needed. CL3 is runtime-first.\n` + output
+    output = `// No next.config changes needed. CL3 is runtime-first.\n` + output
   }
 
   return { transformed, output, warnings }

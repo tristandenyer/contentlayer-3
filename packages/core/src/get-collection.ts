@@ -61,20 +61,10 @@ function applySelectProjection<T extends Record<string, unknown>>(
   }
 
   return items.map(item => {
-    const projected: Partial<T> = {}
-    // Always include _filePath if present
-    if ('_filePath' in item) {
-      ;(projected as any)._filePath = item._filePath
-    }
-
-    // Include selected fields
-    for (const field of select) {
-      if (field in item) {
-        ;(projected as any)[field] = item[field]
-      }
-    }
-
-    return projected
+    const keys = new Set<keyof T>(select)
+    if ('_filePath' in item) keys.add('_filePath' as keyof T)
+    const entries = [...keys].filter(k => k in item).map(k => [k, item[k]])
+    return Object.fromEntries(entries) as Partial<T>
   })
 }
 

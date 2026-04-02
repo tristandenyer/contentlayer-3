@@ -88,7 +88,7 @@ describe('transformNextConfig', () => {
 
   it('comment about no config needed is added', () => {
     const result = transformNextConfig(nextConfigWithContentlayer)
-    expect(result.output).toContain('CL3: No next.config changes needed')
+    expect(result.output).toContain('No next.config changes needed')
   })
 
   it('transformed is true when withContentlayer present', () => {
@@ -105,7 +105,7 @@ describe('transformNextConfig', () => {
 describe('transformImports', () => {
   it('contentlayer/generated import has migration comment', () => {
     const result = transformImports(pageWithGeneratedImport)
-    expect(result.output).toContain('CL3: Replace with')
+    expect(result.output).toContain('Replace with')
   })
 
   it('original import is commented out', () => {

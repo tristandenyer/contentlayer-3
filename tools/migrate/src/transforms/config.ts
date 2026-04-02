@@ -13,7 +13,7 @@ const FIELD_TYPE_MAP: Record<string, string> = {
   enum: 'z.string()',
 }
 
-const DATE_NOTE = '// CL3: date fields are z.string() — parse with new Date() as needed'
+const DATE_NOTE = '// date fields are z.string() — parse with new Date() as needed'
 
 export function transformConfig(source: string): TransformResult {
   const warnings: Warning[] = []
@@ -116,8 +116,7 @@ export function transformConfig(source: string): TransformResult {
     }
 
     const collectionName = typeName.charAt(0).toLowerCase() + typeName.slice(1) + 's'
-    const replacement = `// CL3: computedFields replaced by schema .transform()
-export const ${collectionName} = defineCollection({
+    const replacement = `export const ${collectionName} = defineCollection({
   name: '${collectionName}',
   source: filesystem({ contentDir: '${contentDir}', pattern: '${filePathPattern}' }),
   schema: z.object({

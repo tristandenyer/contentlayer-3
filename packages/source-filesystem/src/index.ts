@@ -59,8 +59,15 @@ export function filesystem(options: FilesystemSourceOptions): CollectionSource<u
           const { data, content } = matter(raw)
           results.push({ ...data, _content: content, _filePath: relPath })
         } else if (ext === 'json') {
-          const parsed = JSON.parse(raw) as Record<string, unknown>
-          results.push({ ...parsed, _filePath: relPath })
+          try {
+            const parsed = JSON.parse(raw) as Record<string, unknown>
+            results.push({ ...parsed, _filePath: relPath })
+          } catch (err) {
+            throw new CL3SourceError(
+              filePath,
+              err instanceof Error ? err : new Error(String(err))
+            )
+          }
         } else if (ext === 'yaml' || ext === 'yml') {
           const parsed = yamlLoad(raw) as Record<string, unknown>
           results.push({ ...parsed, _filePath: relPath })

@@ -231,22 +231,14 @@ describe('source-remote', () => {
     expect(source.watch).toBeUndefined()
   })
 
-  it('offset pagination with no pageSize falls back to no-pagination behavior', async () => {
-    fetchMock.mockResolvedValueOnce({
-      ok: true,
-      json: async () => [{ id: 1 }, { id: 2 }],
-    })
-
+  it('offset pagination with no pageSize throws CL3SourceError', async () => {
     const source = remote({
       endpoint: 'https://api.example.com/items',
       pagination: {
         strategy: 'offset',
       },
     })
-    const result = await source.load()
-
-    expect(result).toEqual([{ id: 1 }, { id: 2 }])
-    expect(fetchMock).toHaveBeenCalledTimes(1)
+    await expect(source.load()).rejects.toThrow('Offset pagination requires pageSize')
   })
 
   it('cursor pagination with custom cursorResponseKey', async () => {
