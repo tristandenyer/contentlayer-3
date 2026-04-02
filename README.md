@@ -1,10 +1,15 @@
-# CL3: Runtime-First Content Layer for Next.js
+# Contentlayer3: Runtime-First Content Layer for Next.js
 
-A modern content management system for Next.js applications that prioritizes runtime composition over build-time generation.
+Contentlayer3 brings your content (be it local files or remote content via APIs) into Next.js as fully typed, Zod-validated data, fetched at request time instead of baked in at build.
 
-## Why CL3?
+[Jump to feature comparison](#feature-comparison)
 
-**Contentlayer** is unmaintained. **Velite** and **content-collections** are build-time only, blocking on full builds. **CL3** runs at request time with Next.js ISR and `revalidateTag`, giving you:
+> [!NOTE]
+> The npm library is coming soon. This repository is a work in progress.
+
+## Why we're making a new Contentlayer
+
+**Contentlayer** is unmaintained. **Velite** and **content-collections** are build-time only, blocking on full builds. **Contentlayer3** runs at request time with Next.js ISR and `revalidateTag`, giving you:
 
 - **Runtime-first**: Fetch and validate content on every request (with intelligent caching)
 - **Edge-safe core**: `@cl3/core` and `@cl3/source-remote` run on Cloudflare Workers and Vercel Edge Functions
@@ -24,15 +29,15 @@ pnpm add @cl3/core @cl3/next @cl3/source-filesystem zod
 ### 2. Create `cl3.config.ts`
 
 ```typescript
-import { defineCollection } from '@cl3/core'
-import { filesystem } from '@cl3/source-filesystem'
-import { z } from 'zod'
+import { defineCollection } from "@cl3/core";
+import { filesystem } from "@cl3/source-filesystem";
+import { z } from "zod";
 
 export const posts = defineCollection({
-  name: 'posts',
+  name: "posts",
   source: filesystem({
-    contentDir: 'content/posts',
-    pattern: '**/*.mdx',
+    contentDir: "content/posts",
+    pattern: "**/*.mdx",
   }),
   schema: z.object({
     title: z.string(),
@@ -40,7 +45,7 @@ export const posts = defineCollection({
     excerpt: z.string(),
     _filePath: z.string().optional(),
   }),
-})
+});
 ```
 
 ### 3. Add content
@@ -83,45 +88,46 @@ export default async function Blog() {
 Create `app/api/revalidate/route.ts`:
 
 ```typescript
-import { revalidateCollection } from '@cl3/next'
-import { posts } from '../../../cl3.config'
-import { NextRequest } from 'next/server'
+import { revalidateCollection } from "@cl3/next";
+import { posts } from "../../../cl3.config";
 
-export async function POST(request: NextRequest) {
-  const token = request.headers.get('x-revalidate-token')
+export async function POST(request: Request) {
+  const token = request.headers.get("x-revalidate-token");
   if (token !== process.env.REVALIDATE_TOKEN) {
-    return new Response('Unauthorized', { status: 401 })
+    return new Response("Unauthorized", { status: 401 });
   }
-  revalidateCollection(posts)
-  return new Response('Revalidated', { status: 200 })
+  revalidateCollection(posts.name);
+  return new Response("Revalidated", { status: 200 });
 }
 ```
 
 ## Package Map
 
-| Package | Purpose | Edge-Safe |
-|---------|---------|-----------|
-| `@cl3/core` | Collection definition and validation | ✓ |
-| `@cl3/next` | Next.js integration with `unstable_cache` | ✗ |
-| `@cl3/mdx` | MDX compilation to JSX | ✓ |
-| `@cl3/source-filesystem` | Filesystem content source | ✗ |
-| `@cl3/source-remote` | HTTP remote content source | ✓ |
-| `@cl3/search-orama` | Full-text search with Orama | ✗ |
-| `@cl3/search-pagefind` | Static search indexing with Pagefind | ✗ |
-| `@cl3/devtools` | CLI tools (validate, inspect, watch) | ✗ |
+| Package                  | Purpose                                                       | Edge-Safe |
+| ------------------------ | ------------------------------------------------------------- | --------- |
+| `@cl3/core`              | Collection definition, validation, and in-memory cache        | ✓         |
+| `@cl3/next`              | Next.js integration with `unstable_cache` and `revalidateTag` | ✗         |
+| `@cl3/mdx`               | MDX compilation to function-body JSX                          | ✓         |
+| `@cl3/source-filesystem` | Filesystem content source (md, mdx, json, yaml)               | ✗         |
+| `@cl3/source-remote`     | HTTP remote content source with offset/cursor pagination      | ✓         |
+| `@cl3/search-orama`      | Full-text search with Orama v3                                | ✓         |
+| `@cl3/search-pagefind`   | Pagefind manifest generation for static search                | ✗         |
+| `@cl3/devtools`          | CLI tools: `validate`, `inspect`, `watch`                     | ✗         |
 
 ## Feature Comparison
 
-| Feature | CL3 | Velite | content-collections | contentlayer2 |
-|---------|-----|--------|--------------------|-|
-| Runtime-first | ✓ | ✗ | ✗ | ✗ |
-| Zod schemas | ✓ | ✓ | ✓ | ✗ |
-| revalidateTag integration | ✓ | ✗ | ✗ | ✗ |
-| Turbopack compatible | ✓ | ⚠️ | ✓ | ⚠️ |
-| Remote sources | ✓ | ✗ | ✗ | ✗ |
-| Edge-safe core | ✓ | ✗ | ✗ | ✗ |
-| Search hooks | ✓ | ✗ | ✗ | ✗ |
-| Actively maintained | ✓ | ✓ | ✓ | ✓ |
+| Feature                   | CL3 | Velite         | content-collections | contentlayer2  |
+| ------------------------- | --- | -------------- | ------------------- | -------------- |
+| Runtime-first             | ✓   | ✗              | ✗                   | ✗              |
+| Zod schemas               | ✓   | ✓              | ✓                   | ✗              |
+| revalidateTag integration | ✓   | ✗              | ✗                   | ✗              |
+| Turbopack compatible      | ✓   | ⚠️<sup>1</sup> | ✓                   | ⚠️<sup>1</sup> |
+| Remote sources            | ✓   | ✗              | ✗                   | ✗              |
+| Edge-safe core            | ✓   | ✗              | ✗                   | ✗              |
+| Search hooks              | ✓   | ✗              | ✗                   | ✗              |
+| Actively maintained       | ✓   | ✓              | ✓                   | ✓              |
+
+<sup>1</sup> Partial support. Build-step and webpack plugin dependencies cause known issues with Turbopack. Contentlayer3 has no build-time dependency, making Turbopack compatibility a non-issue.
 
 ## Documentation
 
@@ -136,7 +142,7 @@ export async function POST(request: NextRequest) {
 
 ## Migration from Contentlayer
 
-Coming soon: `@cl3/migrate` codemod to automatically upgrade Contentlayer projects.
+The `@cl3/migrate` codemod lives in `tools/migrate` and is under active development. It performs AST-level transforms on existing Contentlayer configs and imports.
 
 ## Examples
 
