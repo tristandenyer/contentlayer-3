@@ -1,0 +1,60 @@
+---
+title: A Deep Dive into Zod
+date: "2024-02-20"
+excerpt: Everything you need to know about runtime schema validation with Zod.
+tags:
+  - typescript
+  - zod
+  - validation
+author: alice
+draft: false
+---
+
+# A Deep Dive into Zod
+
+Zod is a TypeScript-first schema declaration and validation library.
+
+## Why Zod?
+
+- **Runtime safety**: catch bad data at the boundary
+- **TypeScript inference**: schemas generate types automatically
+- **Composable**: build complex schemas from primitives
+
+## Basic Usage
+
+```typescript
+import { z } from 'zod'
+
+const UserSchema = z.object({
+  name: z.string(),
+  age: z.number().min(0),
+  email: z.string().email(),
+})
+
+type User = z.infer<typeof UserSchema>
+```
+
+## Advanced Patterns
+
+### Nested Objects
+
+```typescript
+const PostSchema = z.object({
+  title: z.string(),
+  author: z.object({
+    name: z.string(),
+    bio: z.string().optional(),
+  }),
+})
+```
+
+### Arrays and Enums
+
+```typescript
+const TagSchema = z.enum(['typescript', 'javascript', 'rust'])
+const TagsSchema = z.array(TagSchema)
+```
+
+## Conclusion
+
+Zod is an essential tool in the modern TypeScript ecosystem.

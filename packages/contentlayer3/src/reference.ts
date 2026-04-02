@@ -32,6 +32,7 @@ export async function resolveReference<TSchema extends z.ZodObject<z.ZodRawShape
   collection: Collection<TSchema>,
   id: string
 ): Promise<z.infer<TSchema> | undefined> {
+  if (!id) return undefined
   const items = await getCollectionBase(collection) as z.infer<TSchema>[]
   return items.find((item) => {
     const r = item as Record<string, unknown>
