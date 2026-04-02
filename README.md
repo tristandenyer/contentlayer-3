@@ -12,9 +12,10 @@ Contentlayer3 brings your content (be it local files or remote content via APIs)
 **Contentlayer** is unmaintained. **Velite** and **content-collections** are build-time only, blocking on full builds. **Contentlayer3** runs at request time with Next.js ISR and `revalidateTag`, giving you:
 
 - **Runtime-first**: Fetch and validate content on every request (with intelligent caching)
-- **Edge-safe core**: The `contentlayer3` package runs on Cloudflare Workers and Vercel Edge Functions
+- **Edge-safe core**: The `contentlayer3` package is compatible with Cloudflare Workers and Vercel Edge Functions
 - **Zod-only**: Single schema system, no competing frameworks
 - **Remote sources**: Pull content from any HTTP API
+- **Postman governance**: Keep remote source schemas in sync with Postman collections
 - **Search plugins**: Orama and Pagefind integration out-of-the-box
 - **Actively maintained**: New phases ship regularly
 
@@ -23,10 +24,10 @@ Contentlayer3 brings your content (be it local files or remote content via APIs)
 ### 1. Install
 
 ```bash
-pnpm add contentlayer3 zod
+npm add contentlayer3 zod
 ```
 
-### 2. Create `cl3.config.ts`
+### 2. Create `contentlayer3.config.ts`
 
 ```typescript
 import { defineCollection } from "contentlayer3";
@@ -66,7 +67,7 @@ This is my first post!
 
 ```typescript
 import { getCollection } from 'contentlayer3'
-import { posts } from '../cl3.config'
+import { posts } from '../contentlayer3.config'
 
 export default async function Blog() {
   const allPosts = await getCollection(posts)
@@ -89,7 +90,7 @@ Create `app/api/revalidate/route.ts`:
 
 ```typescript
 import { revalidateCollection } from "contentlayer3";
-import { posts } from "../../../cl3.config";
+import { posts } from "../../../contentlayer3.config";
 
 export async function POST(request: Request) {
   const token = request.headers.get("x-revalidate-token");
@@ -103,36 +104,83 @@ export async function POST(request: Request) {
 
 ## Package Map
 
-| Package                    | Purpose                                                       | Edge-Safe |
-| -------------------------- | ------------------------------------------------------------- | --------- |
-| `contentlayer3`            | Collection definition, validation, in-memory cache, Next.js integration, MDX, and filesystem source | ✓ (core + remote) |
-| `@contentlayer3/source-remote` | HTTP remote content source with offset/cursor pagination  | ✓         |
-| `@contentlayer3/search-orama`  | Full-text search with Orama v3                            | ✓         |
-| `@contentlayer3/search-pagefind` | Pagefind manifest generation for static search          | ✗         |
-| `@contentlayer3/devtools`  | CLI tools: `validate`, `inspect`, `watch`                     | ✗         |
+| Package                          | Purpose                                                                                             | Edge-Safe         |
+| -------------------------------- | --------------------------------------------------------------------------------------------------- | ----------------- |
+| `contentlayer3`                  | Collection definition, validation, in-memory cache, Next.js integration, MDX, and filesystem source | ✓ (core + remote) |
+| `@contentlayer3/source-remote`   | HTTP remote content source with offset/cursor pagination                                            | ✓                 |
+| `@contentlayer3/search-orama`    | Full-text search with Orama v3                                                                      | ✓                 |
+| `@contentlayer3/search-pagefind` | Pagefind manifest generation for static search                                                      | ✗                 |
+| `@contentlayer3/devtools`        | CLI tools: `validate`, `inspect`, `watch`                                                           | ✗                 |
+| `@contentlayer3/postman`         | Postman governance CLI: sync remote source schemas with Postman collections                         | ✗                 |
+| `@contentlayer3/graphql`         | GraphQL API plugin: expose collections via a type-safe GraphQL endpoint                             | ✓                 |
 
 ### Subpath exports
 
-| Import                         | Contents                                      |
-| ------------------------------ | --------------------------------------------- |
-| `contentlayer3`                | Core engine, Next.js adapter, revalidation    |
-| `contentlayer3/source-files`   | Filesystem source (md, mdx, json, yaml)       |
-| `contentlayer3/mdx`            | MDX compilation to function-body JSX          |
+| Import                       | Contents                                   |
+| ---------------------------- | ------------------------------------------ |
+| `contentlayer3`              | Core engine, Next.js adapter, revalidation |
+| `contentlayer3/source-files` | Filesystem source (md, mdx, json, yaml)    |
+| `contentlayer3/mdx`          | MDX compilation to function-body JSX       |
 
 ## Feature Comparison
 
 | Feature                   | CL3 | Velite         | content-collections | contentlayer2  |
 | ------------------------- | --- | -------------- | ------------------- | -------------- |
-| Runtime-first             | ✓   | ✗              | ✗                   | ✗              |
-| Zod schemas               | ✓   | ✓              | ✓                   | ✗              |
-| revalidateTag integration | ✓   | ✗              | ✗                   | ✗              |
-| Turbopack compatible      | ✓   | ⚠️<sup>1</sup> | ✓                   | ⚠️<sup>1</sup> |
-| Remote sources            | ✓   | ✗              | ✗                   | ✗              |
-| Edge-safe core            | ✓   | ✗              | ✗                   | ✗              |
-| Search hooks              | ✓   | ✗              | ✗                   | ✗              |
-| Actively maintained       | ✓   | ✓              | ✓                   | ✓              |
+| Runtime-first             | 🟢  | 🔴             | 🔴                  | 🔴             |
+| Zod schemas               | 🟢  | 🟢             | 🟢                  | 🔴             |
+| revalidateTag integration | 🟢  | 🔴             | 🔴                  | 🔴             |
+| Turbopack compatible      | 🟢  | 🟡<sup>1</sup> | 🟢                  | 🟡<sup>1</sup> |
+| Remote sources            | 🟢  | 🔴             | 🔴                  | 🔴             |
+| Edge-safe core            | 🟢  | 🔴             | 🔴                  | 🔴             |
+| Search hooks              | 🟢  | 🔴             | 🔴                  | 🔴             |
+| Postman governance        | 🟢  | 🔴             | 🔴                  | 🔴             |
+| GraphQL API               | 🔴  | 🔴             | 🔴                  | 🟢             |
+| Build-time/static output  | 🔴  | 🟢             | 🟢                  | 🟢             |
+| Actively maintained       | 🟢  | 🟢             | 🟢                  | 🟢             |
 
 <sup>1</sup> Partial support. Build-step and webpack plugin dependencies cause known issues with Turbopack. Contentlayer3 has no build-time dependency, making Turbopack compatibility a non-issue.
+
+## Postman Governance
+
+`@contentlayer3/postman` keeps your remote source schemas in sync with Postman collections via a lock-file governance workflow.
+
+```bash
+npm add -D @contentlayer3/postman
+export POSTMAN_API_KEY=your-key
+contentlayer3-postman init      # first-time setup
+contentlayer3-postman pull <name>   # fetch latest spec from Postman
+contentlayer3-postman apply <name>  # promote pulled spec, regenerate schema
+contentlayer3-postman sync      # CI drift check (exits non-zero on drift)
+```
+
+See [Postman Governance](./packages/postman/README.md) for the full command reference.
+
+## GraphQL API
+
+`@contentlayer3/graphql` exposes your collections as a type-safe GraphQL endpoint. Zod schemas are automatically converted to GraphQL types.
+
+```bash
+pnpm add @contentlayer3/graphql
+```
+
+```typescript
+// app/api/graphql/route.ts
+import { withCollections } from '@contentlayer3/graphql'
+import { getCollection } from 'contentlayer3'
+import { posts } from '../../../contentlayer3.config'
+
+export const { GET, POST } = withCollections([
+  { name: 'posts', schema: posts.schema, getItems: () => getCollection(posts) },
+])
+```
+
+Generate a `schema.graphql` SDL file:
+
+```bash
+contentlayer3-graphql generate
+```
+
+See [GraphQL Plugin](./packages/graphql/README.md) for full documentation.
 
 ## Documentation
 
@@ -141,6 +189,8 @@ export async function POST(request: Request) {
 - [Orama Search](./packages/search-orama/README.md)
 - [Pagefind Search](./packages/search-pagefind/README.md)
 - [Developer Tools](./packages/devtools/README.md)
+- [Postman Governance](./packages/postman/README.md)
+- [GraphQL Plugin](./packages/graphql/README.md)
 
 ## Migration from Contentlayer
 

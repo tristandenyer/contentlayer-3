@@ -40,4 +40,13 @@ program
     await runWatch(collections)
   })
 
+// Dynamic — only if installed
+try {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const postman = await import('@contentlayer3/postman/cli' as string) as any
+  program.addCommand(postman.createCommand())
+} catch {
+  // @contentlayer3/postman not installed — postman commands unavailable
+}
+
 program.parse()

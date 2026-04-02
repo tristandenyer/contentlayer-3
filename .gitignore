@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .contentlayer/
+.contentlayer3/tmp/
 .next/
 *.log
 .DS_Store
