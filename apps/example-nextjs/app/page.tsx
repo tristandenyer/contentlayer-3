@@ -1,4 +1,4 @@
-import { getCollection } from '@cl3/next'
+import { getCollection } from 'contentlayer3'
 import { posts } from '../cl3.config.js'
 
 export default async function Home() {

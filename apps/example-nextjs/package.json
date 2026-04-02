@@ -11,9 +11,7 @@
     "react": "^18",
     "react-dom": "^18",
     "zod": "^3.22.0",
-    "@cl3/core": "workspace:*",
-    "@cl3/next": "workspace:*",
-    "@cl3/source-filesystem": "workspace:*"
+    "contentlayer3": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20",

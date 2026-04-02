@@ -10,8 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@cl3/core": "workspace:*",
-    "@cl3/source-filesystem": "workspace:*",
+    "contentlayer3": "workspace:*",
     "next": "^15",
     "react": "^18",
     "react-dom": "^18",

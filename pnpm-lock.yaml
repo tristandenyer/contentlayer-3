@@ -59,24 +59,18 @@ importers:
 
   apps/example-cloudflare:
     dependencies:
-      '@cl3/core':
-        specifier: workspace:*
-        version: link:../../packages/core
       '@cl3/source-remote':
         specifier: workspace:*
         version: link:../../packages/source-remote
+      contentlayer3:
+        specifier: workspace:*
+        version: link:../../packages/contentlayer3
 
   apps/example-nextjs:
     dependencies:
-      '@cl3/core':
+      contentlayer3:
         specifier: workspace:*
-        version: link:../../packages/core
-      '@cl3/next':
-        specifier: workspace:*
-        version: link:../../packages/next
-      '@cl3/source-filesystem':
-        specifier: workspace:*
-        version: link:../../packages/source-filesystem
+        version: link:../../packages/contentlayer3
       next:
         specifier: latest
         version: 16.2.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -108,12 +102,9 @@ importers:
 
   apps/example-pages:
     dependencies:
-      '@cl3/core':
+      contentlayer3:
         specifier: workspace:*
-        version: link:../../packages/core
-      '@cl3/source-filesystem':
-        specifier: workspace:*
-        version: link:../../packages/source-filesystem
+        version: link:../../packages/contentlayer3
       next:
         specifier: ^15
         version: 15.5.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -137,55 +128,23 @@ importers:
         specifier: ^5.3.0
         version: 5.9.3
 
-  packages/core:
-    dependencies:
-      zod:
-        specifier: ^3.22.0
-        version: 3.25.76
-    devDependencies:
-      '@types/node':
-        specifier: ^20
-        version: 20.19.37
-      typescript:
-        specifier: ^5.3.0
-        version: 5.9.3
-      vitest:
-        specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.37)
-
-  packages/devtools:
-    dependencies:
-      '@cl3/core':
-        specifier: workspace:*
-        version: link:../core
-      cli-table3:
-        specifier: ^0.6.0
-        version: 0.6.5
-      commander:
-        specifier: ^12.0.0
-        version: 12.1.0
-      picocolors:
-        specifier: ^1.0.0
-        version: 1.1.1
-    devDependencies:
-      '@types/node':
-        specifier: ^20
-        version: 20.19.37
-      typescript:
-        specifier: ^5.3.0
-        version: 5.9.3
-      vitest:
-        specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.37)
-      zod:
-        specifier: ^3.22.0
-        version: 3.25.76
-
-  packages/mdx:
+  packages/contentlayer3:
     dependencies:
       '@mdx-js/mdx':
         specifier: ^3.0.0
         version: 3.1.1
+      fast-glob:
+        specifier: ^3.3.2
+        version: 3.3.3
+      gray-matter:
+        specifier: ^4.0.3
+        version: 4.0.3
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.1
+      react:
+        specifier: '>=18'
+        version: 18.3.1
       rehype-autolink-headings:
         specifier: ^7.0.0
         version: 7.1.0
@@ -207,32 +166,16 @@ importers:
       vfile:
         specifier: ^6.0.0
         version: 6.0.3
-    devDependencies:
-      '@types/mdast':
-        specifier: ^4.0.0
-        version: 4.0.4
-      '@types/node':
-        specifier: ^20
-        version: 20.19.37
-      typescript:
-        specifier: ^5.3.0
-        version: 5.9.3
-      vitest:
-        specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.37)
-
-  packages/next:
-    dependencies:
-      '@cl3/core':
-        specifier: workspace:*
-        version: link:../core
       zod:
         specifier: ^3.22.0
         version: 3.25.76
     devDependencies:
-      '@cl3/source-filesystem':
-        specifier: workspace:*
-        version: link:../source-filesystem
+      '@types/js-yaml':
+        specifier: ^4.0.9
+        version: 4.0.9
+      '@types/mdast':
+        specifier: ^4.0.0
+        version: 4.0.4
       '@types/node':
         specifier: ^20
         version: 20.19.37
@@ -248,6 +191,34 @@ importers:
       vitest:
         specifier: ^1.0.0
         version: 1.6.1(@types/node@20.19.37)
+
+  packages/devtools:
+    dependencies:
+      cli-table3:
+        specifier: ^0.6.0
+        version: 0.6.5
+      commander:
+        specifier: ^12.0.0
+        version: 12.1.0
+      contentlayer3:
+        specifier: workspace:*
+        version: link:../contentlayer3
+      picocolors:
+        specifier: ^1.0.0
+        version: 1.1.1
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.37
+      typescript:
+        specifier: ^5.3.0
+        version: 5.9.3
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.37)
+      zod:
+        specifier: ^3.22.0
+        version: 3.25.76
 
   packages/search-orama:
     dependencies:
@@ -277,39 +248,11 @@ importers:
         specifier: ^1.0.0
         version: 1.6.1(@types/node@20.19.37)
 
-  packages/source-filesystem:
-    dependencies:
-      '@cl3/core':
-        specifier: workspace:*
-        version: link:../core
-      fast-glob:
-        specifier: ^3.3.2
-        version: 3.3.3
-      gray-matter:
-        specifier: ^4.0.3
-        version: 4.0.3
-      js-yaml:
-        specifier: ^4.1.0
-        version: 4.1.1
-    devDependencies:
-      '@types/js-yaml':
-        specifier: ^4.0.9
-        version: 4.0.9
-      '@types/node':
-        specifier: ^20
-        version: 20.19.37
-      typescript:
-        specifier: ^5.3.0
-        version: 5.9.3
-      vitest:
-        specifier: ^1.0.0
-        version: 1.6.1(@types/node@20.19.37)
-
   packages/source-remote:
     dependencies:
-      '@cl3/core':
+      contentlayer3:
         specifier: workspace:*
-        version: link:../core
+        version: link:../contentlayer3
     devDependencies:
       '@types/node':
         specifier: ^20

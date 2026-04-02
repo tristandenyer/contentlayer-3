@@ -1,4 +1,4 @@
-import { defineCollection, getCollection } from '@cl3/core'
+import { defineCollection, getCollectionBase } from 'contentlayer3'
 import { remote } from '@cl3/source-remote'
 import { z } from 'zod'
 
@@ -17,7 +17,7 @@ const posts = defineCollection({
 
 export default {
   async fetch(_request: Request): Promise<Response> {
-    const items = await getCollection(posts)
+    const items = await getCollectionBase(posts)
     return new Response(JSON.stringify(items), {
       headers: { 'Content-Type': 'application/json' },
     })

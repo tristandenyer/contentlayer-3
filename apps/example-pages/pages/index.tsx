@@ -1,11 +1,11 @@
 import type { GetStaticProps, InferGetStaticPropsType } from 'next'
-import { getCollection } from '@cl3/core'
+import { getCollectionPages } from 'contentlayer3'
 import { posts } from '../cl3.config.js'
 
 type Post = { title: string; date: string; excerpt: string; _filePath?: string }
 
 export const getStaticProps: GetStaticProps<{ allPosts: Post[] }> = async () => {
-  const allPosts = (await getCollection(posts)) as Post[]
+  const allPosts = (await getCollectionPages(posts)) as Post[]
   return {
     props: { allPosts },
     revalidate: 60,

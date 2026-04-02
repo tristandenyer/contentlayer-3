@@ -1,7 +1,7 @@
 import type { TransformResult, Warning } from '../types.js'
 
 const GENERATED_IMPORT_COMMENT =
-  '// Replace with: import { getCollection } from \'@cl3/next\'\n// See https://cl3.dev/migration for collection setup'
+  '// Replace with: import { getCollection } from \'contentlayer3\'\n// See https://cl3.dev/migration for collection setup'
 
 export function transformImports(source: string): TransformResult {
   const warnings: Warning[] = []

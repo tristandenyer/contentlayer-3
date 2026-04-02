@@ -4,6 +4,9 @@
     "rootDir": ".",
     "noEmit": true,
     "paths": {
+      "contentlayer3": ["./packages/contentlayer3/src/index.ts"],
+      "contentlayer3/mdx": ["./packages/contentlayer3/src/mdx-entry.ts"],
+      "contentlayer3/source-files": ["./packages/contentlayer3/src/filesystem.ts"],
       "@cl3/core": ["./packages/core/src/index.ts"],
       "@cl3/core/*": ["./packages/core/src/*.ts"],
       "@cl3/next": ["./packages/next/src/index.ts"],

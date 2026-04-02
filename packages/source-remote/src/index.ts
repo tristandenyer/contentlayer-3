@@ -1,4 +1,4 @@
-import type { CollectionSource } from '@cl3/core'
+import type { CollectionSource } from 'contentlayer3'
 import { CL3SourceError, type RemoteSourceOptions } from './types.js'
 
 export { CL3SourceError, type RemoteSourceOptions } from './types.js'

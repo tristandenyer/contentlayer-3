@@ -17,7 +17,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@cl3/core": "workspace:*"
+    "contentlayer3": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20",

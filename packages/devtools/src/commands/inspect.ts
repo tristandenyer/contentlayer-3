@@ -1,7 +1,7 @@
 import pc from 'picocolors'
 import Table from 'cli-table3'
-import { getCollection } from '@cl3/core'
-import type { Collection } from '@cl3/core'
+import { getCollectionBase } from 'contentlayer3'
+import type { Collection } from 'contentlayer3'
 import type { z } from 'zod'
 
 export async function runInspect(
@@ -22,7 +22,7 @@ export async function runInspect(
     let items: unknown[] = []
     let error: string | null = null
     try {
-      items = await getCollection(collection)
+      items = await getCollectionBase(collection)
     } catch (err) {
       error = err instanceof Error ? err.message : String(err)
     }

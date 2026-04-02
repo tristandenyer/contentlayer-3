@@ -12,7 +12,7 @@ Contentlayer3 brings your content (be it local files or remote content via APIs)
 **Contentlayer** is unmaintained. **Velite** and **content-collections** are build-time only, blocking on full builds. **Contentlayer3** runs at request time with Next.js ISR and `revalidateTag`, giving you:
 
 - **Runtime-first**: Fetch and validate content on every request (with intelligent caching)
-- **Edge-safe core**: `@cl3/core` and `@cl3/source-remote` run on Cloudflare Workers and Vercel Edge Functions
+- **Edge-safe core**: The `contentlayer3` package runs on Cloudflare Workers and Vercel Edge Functions
 - **Zod-only**: Single schema system, no competing frameworks
 - **Remote sources**: Pull content from any HTTP API
 - **Search plugins**: Orama and Pagefind integration out-of-the-box
@@ -23,14 +23,14 @@ Contentlayer3 brings your content (be it local files or remote content via APIs)
 ### 1. Install
 
 ```bash
-pnpm add @cl3/core @cl3/next @cl3/source-filesystem zod
+pnpm add contentlayer3 zod
 ```
 
 ### 2. Create `cl3.config.ts`
 
 ```typescript
-import { defineCollection } from "@cl3/core";
-import { filesystem } from "@cl3/source-filesystem";
+import { defineCollection } from "contentlayer3";
+import { filesystem } from "contentlayer3/source-files";
 import { z } from "zod";
 
 export const posts = defineCollection({
@@ -65,7 +65,7 @@ This is my first post!
 ### 4. Use in a page
 
 ```typescript
-import { getCollection } from '@cl3/next'
+import { getCollection } from 'contentlayer3'
 import { posts } from '../cl3.config'
 
 export default async function Blog() {
@@ -88,7 +88,7 @@ export default async function Blog() {
 Create `app/api/revalidate/route.ts`:
 
 ```typescript
-import { revalidateCollection } from "@cl3/next";
+import { revalidateCollection } from "contentlayer3";
 import { posts } from "../../../cl3.config";
 
 export async function POST(request: Request) {
@@ -103,16 +103,21 @@ export async function POST(request: Request) {
 
 ## Package Map
 
-| Package                  | Purpose                                                       | Edge-Safe |
-| ------------------------ | ------------------------------------------------------------- | --------- |
-| `@cl3/core`              | Collection definition, validation, and in-memory cache        | ✓         |
-| `@cl3/next`              | Next.js integration with `unstable_cache` and `revalidateTag` | ✗         |
-| `@cl3/mdx`               | MDX compilation to function-body JSX                          | ✓         |
-| `@cl3/source-filesystem` | Filesystem content source (md, mdx, json, yaml)               | ✗         |
-| `@cl3/source-remote`     | HTTP remote content source with offset/cursor pagination      | ✓         |
-| `@cl3/search-orama`      | Full-text search with Orama v3                                | ✓         |
-| `@cl3/search-pagefind`   | Pagefind manifest generation for static search                | ✗         |
-| `@cl3/devtools`          | CLI tools: `validate`, `inspect`, `watch`                     | ✗         |
+| Package                    | Purpose                                                       | Edge-Safe |
+| -------------------------- | ------------------------------------------------------------- | --------- |
+| `contentlayer3`            | Collection definition, validation, in-memory cache, Next.js integration, MDX, and filesystem source | ✓ (core + remote) |
+| `@contentlayer3/source-remote` | HTTP remote content source with offset/cursor pagination  | ✓         |
+| `@contentlayer3/search-orama`  | Full-text search with Orama v3                            | ✓         |
+| `@contentlayer3/search-pagefind` | Pagefind manifest generation for static search          | ✗         |
+| `@contentlayer3/devtools`  | CLI tools: `validate`, `inspect`, `watch`                     | ✗         |
+
+### Subpath exports
+
+| Import                         | Contents                                      |
+| ------------------------------ | --------------------------------------------- |
+| `contentlayer3`                | Core engine, Next.js adapter, revalidation    |
+| `contentlayer3/source-files`   | Filesystem source (md, mdx, json, yaml)       |
+| `contentlayer3/mdx`            | MDX compilation to function-body JSX          |
 
 ## Feature Comparison
 
@@ -131,10 +136,7 @@ export async function POST(request: Request) {
 
 ## Documentation
 
-- [Core API](./packages/core/README.md)
-- [Next.js Integration](./packages/next/README.md)
-- [MDX Compilation](./packages/mdx/README.md)
-- [Filesystem Source](./packages/source-filesystem/README.md)
+- [Core / Next.js](./packages/contentlayer3/README.md)
 - [Remote Source](./packages/source-remote/README.md)
 - [Orama Search](./packages/search-orama/README.md)
 - [Pagefind Search](./packages/search-pagefind/README.md)
@@ -142,7 +144,7 @@ export async function POST(request: Request) {
 
 ## Migration from Contentlayer
 
-The `@cl3/migrate` codemod lives in `tools/migrate` and is under active development. It performs AST-level transforms on existing Contentlayer configs and imports.
+The `migrate` codemod lives in `tools/migrate` and is under active development. It performs AST-level transforms on existing Contentlayer configs and imports.
 
 ## Examples
 

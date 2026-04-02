@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { defineCollection, getCollection } from '@cl3/core'
-import { filesystem } from '@cl3/source-filesystem'
+import { defineCollection, getCollection } from 'contentlayer3'
+import { filesystem } from 'contentlayer3/source-files'
 
 const posts = defineCollection({
   name: 'posts',

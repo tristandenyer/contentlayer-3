@@ -4,14 +4,6 @@
     "jsx": "preserve",
     "noEmit": true,
     "rootDir": "./",
-    "paths": {
-      "@cl3/core": [
-        "../../packages/core/dist/index.d.ts"
-      ],
-      "@cl3/source-filesystem": [
-        "../../packages/source-filesystem/dist/index.d.ts"
-      ]
-    },
     "allowJs": true,
     "incremental": true,
     "esModuleInterop": true,

@@ -1,6 +1,6 @@
 import pc from 'picocolors'
-import { getCollection } from '@cl3/core'
-import type { Collection } from '@cl3/core'
+import { getCollectionBase } from 'contentlayer3'
+import type { Collection } from 'contentlayer3'
 
 export async function runValidate(
   collections: Record<string, Collection<any>>
@@ -9,7 +9,7 @@ export async function runValidate(
 
   for (const [, collection] of Object.entries(collections)) {
     try {
-      const items = await getCollection(collection, { fresh: true })
+      const items = await getCollectionBase(collection, { fresh: true })
       console.log(pc.green(`✓ ${collection.name}`) + ` — ${items.length} items, 0 errors`)
     } catch (err) {
       hasErrors = true

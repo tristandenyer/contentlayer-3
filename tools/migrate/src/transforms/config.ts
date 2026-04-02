@@ -22,7 +22,7 @@ export function transformConfig(source: string): TransformResult {
   // 1. Replace import
   output = output.replace(
     /import\s*\{[^}]*defineDocumentType[^}]*\}\s*from\s*['"]contentlayer\/source-files['"]/g,
-    `import { defineCollection } from '@cl3/core'\nimport { filesystem } from '@cl3/source-filesystem'\nimport { z } from 'zod'`
+    `import { defineCollection } from 'contentlayer3'\nimport { filesystem } from 'contentlayer3/source-files'\nimport { z } from 'zod'`
   )
 
   // 2. Extract contentDirPath and filePathPattern from makeSource/defineDocumentType

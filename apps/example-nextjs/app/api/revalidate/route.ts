@@ -1,4 +1,4 @@
-import { revalidateCollection } from '@cl3/next'
+import { revalidateCollection } from 'contentlayer3'
 import { posts } from '../../../cl3.config.js'
 
 export async function POST(request: Request) {

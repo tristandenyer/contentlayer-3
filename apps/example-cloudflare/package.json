@@ -7,7 +7,7 @@
     "dev": "wrangler dev"
   },
   "dependencies": {
-    "@cl3/core": "workspace:*",
+    "contentlayer3": "workspace:*",
     "@cl3/source-remote": "workspace:*"
   }
 }

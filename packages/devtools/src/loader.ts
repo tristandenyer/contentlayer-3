@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
-import type { Collection } from '@cl3/core'
+import type { Collection } from 'contentlayer3'
 
 export async function loadCL3Config(configPath?: string): Promise<{
   collections: Record<string, Collection<any>>

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { remote, CL3SourceError, type RemoteSourceOptions } from '../src/index.js'
-import type { CollectionSource } from '@cl3/core'
+import type { CollectionSource } from 'contentlayer3'
 
 describe('source-remote', () => {
   let fetchMock: ReturnType<typeof vi.fn>

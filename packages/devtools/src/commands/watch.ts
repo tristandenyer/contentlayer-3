@@ -1,8 +1,8 @@
 import { watch as fsWatch } from 'node:fs'
 import { resolve } from 'node:path'
 import pc from 'picocolors'
-import { getCollection } from '@cl3/core'
-import type { Collection } from '@cl3/core'
+import { getCollectionBase } from 'contentlayer3'
+import type { Collection } from 'contentlayer3'
 
 export async function runWatch(
   collections: Record<string, Collection<any>>
@@ -21,7 +21,7 @@ export async function runWatch(
       const watcher = fsWatch(dir, { recursive: true }, async (event, filename) => {
         console.log(pc.yellow(`[${collection.name}]`) + ` ${event}: ${filename ?? 'unknown'}`)
         try {
-          const items = await getCollection(collection, { fresh: true })
+          const items = await getCollectionBase(collection, { fresh: true })
           console.log(pc.green(`  ✓ ${items.length} items validated`))
         } catch (err) {
           const msg = err instanceof Error ? err.message : String(err)

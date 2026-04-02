@@ -1,0 +1,63 @@
+{
+  "name": "contentlayer3",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Runtime content layer for Next.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "edge-light": "./dist/index.js",
+      "worker": "./dist/index.js",
+      "import": "./dist/index.js"
+    },
+    "./source-files": {
+      "types": "./dist/filesystem.d.ts",
+      "import": "./dist/filesystem.js"
+    },
+    "./mdx": {
+      "types": "./dist/mdx-entry.d.ts",
+      "import": "./dist/mdx-entry.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.22.0",
+    "gray-matter": "^4.0.3",
+    "fast-glob": "^3.3.2",
+    "js-yaml": "^4.1.0",
+    "@mdx-js/mdx": "^3.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-frontmatter": "^5.0.0",
+    "rehype-slug": "^6.0.0",
+    "rehype-autolink-headings": "^7.0.0",
+    "unist-util-visit": "^5.0.0",
+    "unified": "^10.0.0",
+    "vfile": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/mdast": "^4.0.0",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "next": "^15",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "peerDependencies": {
+    "next": ">=14",
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "next": { "optional": false },
+    "react": { "optional": false }
+  },
+  "keywords": ["next.js", "content", "mdx", "cms", "contentlayer"],
+  "license": "MIT"
+}

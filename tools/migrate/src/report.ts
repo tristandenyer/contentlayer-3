@@ -47,14 +47,14 @@ export function generateReport(summary: MigrationSummary): string {
     '- **computedFields**: Replace with Zod `.transform()` on your schema.',
     '  Example: `schema: z.object({ title: z.string() }).transform(doc => ({ ...doc, url: `/posts/${doc._filePath}` }))`',
     '- **date field type**: CL3 stores dates as strings. Parse with `new Date(item.date)` at use site.',
-    '- **allPosts/allDocs generated imports**: Replace with `getCollection(posts)` from `@cl3/next`.',
+    '- **allPosts/allDocs generated imports**: Replace with `getCollection(posts)` from `contentlayer3`.',
     '',
     '## Next Steps',
     '',
     '1. Review `cl3.config.ts` and verify schema fields match your content',
     '2. Update pages/components that imported from `contentlayer/generated`',
     '3. Remove `contentlayer` and `next-contentlayer` from package.json',
-    '4. Run `pnpm add @cl3/core @cl3/next @cl3/source-filesystem zod`',
+    '4. Run `pnpm add contentlayer3 zod`',
   )
 
   return lines.join('\n')
