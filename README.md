@@ -14,6 +14,8 @@ Contentlayer3 brings your content (be it local files or remote content via APIs)
 - **Runtime-first**: Fetch and validate content on every request (with intelligent caching)
 - **Edge-safe core**: The `contentlayer3` package is compatible with Cloudflare Workers and Vercel Edge Functions
 - **Zod-only**: Single schema system, no competing frameworks
+- **Computed fields**: Derive slugs, URLs, reading time, and more at definition time
+- **Collection references**: Link collections together with type-safe `reference()` fields
 - **Remote sources**: Pull content from any HTTP API
 - **Postman governance**: Keep remote source schemas in sync with Postman collections
 - **Search plugins**: Orama and Pagefind integration out-of-the-box
@@ -46,6 +48,10 @@ export const posts = defineCollection({
     excerpt: z.string(),
     _filePath: z.string().optional(),
   }),
+  computedFields: {
+    slug: (post) => post._filePath?.replace(/\.mdx?$/, "").split("/").pop() ?? "",
+    url:  (post) => `/posts/${post._filePath?.replace(/\.mdx?$/, "").split("/").pop()}`,
+  },
 });
 ```
 
@@ -131,6 +137,8 @@ export async function POST(request: Request) {
 | Zod schemas               | 🟢  | 🟢             | 🟢                  | 🔴             |
 | revalidateTag integration | 🟢  | 🔴             | 🔴                  | 🔴             |
 | Turbopack compatible      | 🟢  | 🟡<sup>1</sup> | 🟢                  | 🟡<sup>1</sup> |
+| Computed fields           | 🟢  | 🟢             | 🟢                  | 🟢             |
+| Collection references     | 🟢  | 🔴             | 🔴                  | 🟢             |
 | Remote sources            | 🟢  | 🔴             | 🔴                  | 🔴             |
 | Edge-safe core            | 🟢  | 🔴             | 🔴                  | 🔴             |
 | Search hooks              | 🟢  | 🔴             | 🔴                  | 🔴             |
@@ -140,6 +148,62 @@ export async function POST(request: Request) {
 | Actively maintained       | 🟢  | 🟢             | 🟢                  | 🟢             |
 
 <sup>1</sup> Partial support. Build-step and webpack plugin dependencies cause known issues with Turbopack. Contentlayer3 has no build-time dependency, making Turbopack compatibility a non-issue.
+
+## Computed Fields
+
+Derive values from validated items at definition time. Computed fields are applied after Zod validation, before caching, so they're always present when you call `getCollection`.
+
+```typescript
+import { defineCollection } from "contentlayer3";
+import { filesystem } from "contentlayer3/source-files";
+import { z } from "zod";
+
+export const posts = defineCollection({
+  name: "posts",
+  source: filesystem({ contentDir: "content/posts", pattern: "**/*.mdx" }),
+  schema: z.object({
+    title: z.string(),
+    date: z.string(),
+    _filePath: z.string(),
+  }),
+  computedFields: {
+    slug: (post) => post._filePath.replace(/\.mdx?$/, "").split("/").pop(),
+    url:  (post) => `/posts/${post._filePath.replace(/\.mdx?$/, "").split("/").pop()}`,
+    // async fields are awaited automatically
+    readingTime: async (post) => estimateReadingTime(post._filePath),
+  },
+});
+```
+
+## Collection References
+
+Link collections together with `reference()`. The field stores the ID at rest; use `resolveReference` or `resolveReferences` to hydrate when needed.
+
+```typescript
+import { defineCollection, reference, resolveReference } from "contentlayer3";
+import { z } from "zod";
+
+export const authors = defineCollection({
+  name: "authors",
+  source: filesystem({ contentDir: "content/authors", pattern: "**/*.md" }),
+  schema: z.object({ name: z.string(), slug: z.string() }),
+});
+
+export const posts = defineCollection({
+  name: "posts",
+  source: filesystem({ contentDir: "content/posts", pattern: "**/*.mdx" }),
+  schema: z.object({
+    title: z.string(),
+    author: reference(authors),  // stored as slug string
+  }),
+});
+
+// In your page:
+const post = await getCollectionItem(posts, (p) => p.slug === params.slug);
+const author = await resolveReference(authors, post.author);
+```
+
+`resolveReference` matches on `slug`, `id`, or `_filePath`. Use `resolveReferences(collection, ids[])` for array fields like `tags` or `coAuthors`.
 
 ## Postman Governance
 

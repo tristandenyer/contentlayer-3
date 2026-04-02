@@ -3,7 +3,10 @@ export { defineCollection } from './collection.js'
 export { getCollectionBase, getCollectionItemBase } from './get-collection.js'
 export { CL3ValidationError, CL3SourceError } from './errors.js'
 export { createMemoryCache } from './cache.js'
-export type { CollectionSource, CollectionConfig, Collection, CL3Cache } from './types.js'
+export type { CollectionSource, CollectionConfig, Collection, CL3Cache, ComputedFields } from './types.js'
+
+// Collection references
+export { reference, resolveReference, resolveReferences } from './reference.js'
 
 // Next.js adapter (primary getCollection)
 export { getCollection, getCollectionItem, createNextCache } from './next-cache.js'

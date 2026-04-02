@@ -40,7 +40,16 @@ export async function getCollectionBase<TSchema extends z.ZodObject<z.ZodRawShap
         issue?.message ?? 'Unknown error'
       )
     }
-    results.push(parsed.data)
+
+    const item = parsed.data
+    const computedFields = collection.config?.computedFields
+    if (computedFields) {
+      for (const [key, fn] of Object.entries(computedFields)) {
+        ;(item as Record<string, unknown>)[key] = await fn(item)
+      }
+    }
+
+    results.push(item)
   }
 
   globalCache.set(cacheKey, results)
