@@ -9,7 +9,7 @@ Contentlayer3 brings your content (be it local files or remote content via APIs)
 
 ## Why we're making a new Contentlayer
 
-**Contentlayer** is unmaintained. **Velite** and **content-collections** are build-time only, blocking on full builds. **Contentlayer3** runs at request time with Next.js ISR and `revalidateTag`, giving you:
+The original **Contentlayer** is unmaintained. **Velite** and **content-collections** process content only at build time, requiring a full rebuild to pick up content changes. **Contentlayer3** runs at request time with Next.js ISR and `revalidateTag`, giving you:
 
 - **Runtime-first**: Fetch and validate content on every request (with intelligent caching)
 - **Edge-safe core**: The `contentlayer3` package is compatible with Cloudflare Workers and Vercel Edge Functions
