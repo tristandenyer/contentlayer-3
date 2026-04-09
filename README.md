@@ -9,10 +9,12 @@ Contentlayer3 brings your content (be it local files or remote content via APIs)
 
 ## Why we're making a new Contentlayer
 
-The original **Contentlayer** is unmaintained. **Velite** and **content-collections** process content only at build time, requiring a full rebuild to pick up content changes. **Contentlayer3** runs at request time with Next.js ISR and `revalidateTag`, giving you:
+The original **Contentlayer** is unmaintained. **Velite** and **content-collections** process content only at build time, requiring a full rebuild to pick up content changes.
+
+**Contentlayer3** runs at request time with Next.js ISR and `revalidateTag`, giving you:
 
 - **Runtime-first**: Fetch and validate content on every request (with intelligent caching)
-- **Edge-safe core**: The `contentlayer3` package is compatible with Cloudflare Workers and Vercel Edge Functions
+- **Edge-safe remote sources**: The `@contentlayer3/source-remote` package is compatible with Cloudflare Workers and Vercel Edge Functions; the local filesystem source requires Node.js
 - **Zod-only**: Single schema system, no competing frameworks
 - **Computed fields**: Derive slugs, URLs, reading time, and more at definition time
 - **Collection references**: Link collections together with type-safe `reference()` fields
@@ -150,7 +152,7 @@ export async function POST(request: Request) {
 | Computed fields           | 🟢             | 🟢             | 🟢                  | 🟢             |
 | Collection references     | 🟢             | 🔴             | 🔴                  | 🟢             |
 | Remote sources            | 🟢             | 🔴             | 🔴                  | 🔴             |
-| Edge-safe core            | 🟢             | 🔴             | 🔴                  | 🔴             |
+| Edge-safe (remote source) | 🟢             | 🔴             | 🔴                  | 🔴             |
 | Search hooks              | 🟢             | 🔴             | 🔴                  | 🔴             |
 | Postman governance        | 🟢             | 🔴             | 🔴                  | 🔴             |
 | GraphQL API               | 🟢             | 🔴             | 🔴                  | 🟢             |
@@ -160,6 +162,21 @@ export async function POST(request: Request) {
 <sup>1</sup> Partial support. Build-step and webpack plugin dependencies cause known issues with Turbopack. Contentlayer3 has no build-time dependency, making Turbopack compatibility a non-issue.
 
 <sup>2</sup> By design. Contentlayer3 fetches content at request time, sidestepping bundler dependency.
+
+## Next.js Rendering Mode Support
+
+| Rendering mode                                          | Supported | Notes                                                              |
+| ------------------------------------------------------- | --------- | ------------------------------------------------------------------ |
+| App Router SSR (dynamic)                                | 🟢        | `getCollection()` uses `unstable_cache` with a configurable TTL    |
+| App Router ISR                                         | 🟢        | `revalidateCollection()` triggers tag-based cache invalidation     |
+| App Router SSG (`generateStaticParams`)                 | 🔴        | No build-time static generation helper; content loads at runtime   |
+| Pages Router SSR (`getServerSideProps`)                 | 🟢        | Use `getCollectionPages()` in `getServerSideProps`                 |
+| Pages Router SSG (`getStaticProps`, no revalidate)      | 🟢        | Use `getCollectionPages()` in `getStaticProps`                     |
+| Pages Router ISR (`getStaticProps` + `revalidate`)      | 🟢        | Uses in-memory cache; revalidation handled by Next.js ISR interval |
+| Static export (`output: 'export'`)                      | 🔴        | Requires a server runtime; static export has no runtime            |
+| Edge runtime (filesystem source)                        | 🔴        | `node:fs` is unavailable in edge runtimes                          |
+| Edge runtime (`@contentlayer3/source-remote`)           | 🟢        | Remote source has no Node.js dependencies                          |
+| Partial Prerendering (PPR)                              | 🔴        | Not yet implemented                                                |
 
 ## Computed Fields
 
